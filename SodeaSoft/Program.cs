@@ -59,7 +59,7 @@ namespace SodeaSoft
                     DateTime endDate;
                     if (today.DayOfWeek == DayOfWeek.Sunday) startDate = today.AddDays(1);
                     else startDate = today.AddDays(DayOfWeek.Monday - today.DayOfWeek + 7);
-                    endDate = startDate.AddDays(5);
+                    endDate = startDate.AddDays(5).AddSeconds(-1);
                     for (int i = 0; i < numberOfWeeks; i++)
                     {
                         Utils.prettyWriteLine($"{startDate} -> {endDate}", ConsoleColor.Green);

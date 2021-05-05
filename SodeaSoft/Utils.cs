@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Globalization;
+using System.IO;
 
 namespace SodeaSoft
 {
@@ -40,6 +41,9 @@ namespace SodeaSoft
 
         public static void toPdf(string html, string path)
         {
+            StreamWriter sr = new StreamWriter($"{path}.html");
+            sr.Write(html);
+            sr.Close();
             /*PdfDocument pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
             pdf.Save(path);*/
         }

@@ -11,11 +11,11 @@ namespace SodeaSoft
         {
 			StringBuilder sb = new StringBuilder();
 			sb.Append("<thead>");
-			sb.Append($"<tr><th colspan=11>Semaine {Utils.GetIso8601WeekOfYear(startDate)} ({startDate.ToShortDateString()} -> {endDate.ToShortDateString()})</th></tr>");
+			sb.Append($"<tr><th colspan=6>Semaine {Utils.GetIso8601WeekOfYear(startDate)} ({startDate.ToShortDateString()} -> {endDate.ToShortDateString()})</th></tr>");
 			sb.Append("<tr><th>Resource</th>");
 			for (int i = 0; i < 5; i++)
 			{
-				sb.Append($"<th colspan=2>{ startDate.AddDays(i).ToString("M") }</th>");
+				sb.Append($"<th>{ startDate.AddDays(i).ToString("M") }</th>");
 			}
 			sb.Append("</tr>");
 			sb.Append("</thead>");
@@ -39,24 +39,33 @@ namespace SodeaSoft
 			foreach (ViewResource viewResource in viewResources)
 			{
 				if (!firstResourcePass)
-					sb.Append("<tr><td class='sep' colspan=11></td></tr>");
-				bool firstTaskPass = true;
-				for (DateTime dateIterator = startDate.Date; dateIterator <= endDate.Date; dateIterator = dateIterator.AddDays(1))
-                {
-					DateTime datStart = dateIterator.Date;
-					DateTime datEnd = dateIterator.Date.AddDays(1).AddSeconds(-1);
-					int maxNumberOfRows = viewResource.getMaxNumberOfRows(datStart, datEnd);
-					if (firstTaskPass) {
-						sb.Append($"<td rowspan={maxNumberOfRows * 3 - 1}><pre>{viewResource.ResourceName}</pre></td>");
+					sb.Append("<tr><td class='sep' colspan=6></td></tr>");
+				int numberOfRows = viewResource.getMaxNumberOfRows(startDate, endDate);
+				for (int i = 0; i < numberOfRows; i++)
+				{
+					sb.Append("<tr>");
+					for (int j = 0; j < viewResource.week.days.Count; j++)
+					{
+						if (i == 0 && j == 0)
+                        {
+							sb.Append($"<td rowspan={numberOfRows}><pre>{viewResource.ResourceName}</pre></td>");
+                        }
+						sb.Append("<td>");
+						List<ViewTask> viewtasksOfTheDay = viewResource.week.days[j];
+						if (i < viewtasksOfTheDay.Count)
+						{
+							ViewTask currentViewTask = viewtasksOfTheDay[i];
+							sb.Append($"<table><tr><td><pre>{currentViewTask.Caption}</pre></td><td><pre>{currentViewTask.RS}</pre></td></tr><tr><td colspan=2><pre>{currentViewTask.Information}</pre></td></tr></table>");
+							// OK
+                        }
+						else
+                        {
+							// Empty :)
+						}
+						sb.Append("</td>");
 					}
-					sb.Append($"<td><pre></pre></td><td><pre></pre></td>");
-					sb.Append($"<td><pre></pre></td><td><pre></pre></td>");
-					sb.Append($"<td><pre></pre></td><td><pre></pre></td>");
-					sb.Append($"<td><pre></pre></td><td><pre></pre></td>");
-					sb.Append($"<td><pre></pre></td><td><pre></pre></td>");
-					firstTaskPass = false;
+					sb.Append("</tr>");
 				}
-				firstResourcePass = false;
             }
 			// TBODY END
 			sb.Append("</tbody>");
