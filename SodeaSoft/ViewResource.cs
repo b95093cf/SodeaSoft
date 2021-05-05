@@ -16,7 +16,7 @@ namespace SodeaSoft
         public int getMaxNumberOfRows(DateTime startDate, DateTime endDate)
         {
             int max = 0;
-            for (; startDate < endDate; startDate = startDate.AddDays(7))
+            for (; startDate < endDate; startDate = startDate.AddDays(1))
             {
                 int tmp = 0;
                 foreach (ViewTask viewTask in viewTasks)
