@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SodeaSoft": {
+      "commandName": "Project",
+      "commandLineArgs": "PlanningPro.db"
+    }
+  }
+}
