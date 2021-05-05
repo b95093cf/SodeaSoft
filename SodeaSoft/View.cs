@@ -26,7 +26,7 @@ namespace SodeaSoft
 			List<string> resources = Task.getDistinctResources(tasks);
 			List<ViewResource> viewResources = new List<ViewResource>();
 			foreach (string resource in resources)
-				viewResources.Add(new ViewResource(resource, tasks));
+				viewResources.Add(new ViewResource(resource, tasks, startDate, endDate));
 			StringBuilder sb = new StringBuilder();
 			string head = File.ReadAllText("www/head.html");
 			string foot = File.ReadAllText("www/foot.html");
@@ -41,8 +41,7 @@ namespace SodeaSoft
 				if (!firstResourcePass)
 					sb.Append("<tr><td class='sep' colspan=11></td></tr>");
 				bool firstTaskPass = true;
-				for (int i = 0; )
-				for (DateTime dateIterator = startDate.Date; dateIterator <= endDate.Date; dateIterator.AddDays(1))
+				for (DateTime dateIterator = startDate.Date; dateIterator <= endDate.Date; dateIterator = dateIterator.AddDays(1))
                 {
 					DateTime datStart = dateIterator.Date;
 					DateTime datEnd = dateIterator.Date.AddDays(1).AddSeconds(-1);
