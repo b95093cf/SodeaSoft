@@ -10,10 +10,41 @@ namespace SodeaSoft
     {
         static List<Task> getData(SqliteConnection connection, DateTime from, DateTime to)
         {
+            
             string properFrom = from.ToString("yyyy-MM-dd");
             string properTo = to.ToString("yyyy-MM-dd");
             var command = connection.CreateCommand();
-            command.CommandText = $"SELECT Code, Caption, Information, datStart, datEnd, Duration, RS, Nom, SurNom  FROM ((SELECT * FROM Task LEFT OUTER JOIN Customer on Task.IDCustomer == Customer.ID) R1 LEFT OUTER JOIN Resource ON Resource.ID == R1.IDUser) WHERE (datStart <= '{properTo}' AND datEnd >= '{properFrom}') OR (datStart >= '{properFrom}' AND datStart <= '{properTo}')";
+            command.CommandText = @$"
+SELECT
+    Code,
+    Caption,
+    Information,
+    datStart,
+    datEnd,
+    Duration,
+    RS,
+    Nom,
+    SurNom
+FROM
+(
+    SELECT * FROM
+    (
+        SELECT * FROM
+        (
+            SELECT * FROM Task
+            WHERE
+            (
+                (datStart <= '{properTo}' AND datEnd >= '{properFrom}') OR
+                (datStart >= '{properFrom}' AND datStart <= '{properTo}')
+            )
+            AND Deleted is NULL
+            AND IDUser IN (SELECT IDResource FROM Res_Team WHERE IDTeam == 5)
+        ) R1
+        LEFT OUTER JOIN Customer on R1.IDCustomer == Customer.ID
+    ) R2
+    LEFT OUTER JOIN Resource ON Resource.ID == R2.IDUser
+)
+";
             Utils.prettyWriteLine(command.CommandText, ConsoleColor.Yellow);
             Console.WriteLine();
             List<Task> tasks = new List<Task>();
@@ -55,7 +86,8 @@ namespace SodeaSoft
                 {
                     connection.Open();
                     //showTables(connection);
-                    DateTime today = DateTime.Now.Date.AddMonths(-24);
+                    //DateTime today = DateTime.Now.Date.AddMonths(-7);
+                    DateTime today = new DateTime(2019, 11, 27);
                     DateTime startDate;
                     DateTime endDate;
                     if (today.DayOfWeek == DayOfWeek.Sunday) startDate = today.AddDays(1);
