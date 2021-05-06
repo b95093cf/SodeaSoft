@@ -22,14 +22,14 @@ namespace SodeaSoft
                 while (reader.Read())
                 {
                     tasks.Add(new Task(
-                        reader.GetString(0),
-                        reader.GetString(1),
-                        reader.GetString(2),
-                        reader.GetDateTime(3),
-                        reader.GetDateTime(4),
-                        reader.GetDouble(5),
-                        reader.GetString(8) != null ? reader.GetString(8) : reader.GetString(7),
-                        reader.GetString(6)
+                        reader.IsDBNull(0) ? "" : reader.GetString(0),
+                        reader.IsDBNull(1) ? "" : reader.GetString(1),
+                        reader.IsDBNull(2) ? "" : reader.GetString(2),
+                        reader.IsDBNull(3) ? new DateTime(1980, 1, 1): reader.GetDateTime(3),
+                        reader.IsDBNull(4) ? new DateTime(1980, 1, 1) : reader.GetDateTime(4),
+                        reader.IsDBNull(5) ? -1 : reader.GetDouble(5),
+                        reader.IsDBNull(8) ? reader.IsDBNull(7) ? "" : reader.GetString(7) : reader.GetString(8),
+                        reader.IsDBNull(6) ? "" : reader.GetString(6)
                     ));
                 }
             }
@@ -63,16 +63,16 @@ namespace SodeaSoft
                     endDate = startDate.AddDays(5).AddSeconds(-1);
                     for (int i = 0; i < numberOfWeeks; i++)
                     {
-                        Utils.prettyWriteLine($"{startDate} -> {endDate}", ConsoleColor.Green);
-                        List<Task> tasks = getData(connection, startDate, endDate);
+                        DateTime currentStartDate = startDate.AddDays(i * 7);
+                        DateTime currentEndDate = endDate.AddDays(i * 7);
+                        Utils.prettyWriteLine($"{currentStartDate} -> {currentEndDate}", ConsoleColor.Green);
+                        List<Task> tasks = getData(connection, startDate, currentEndDate);
                         foreach (Task task in tasks)
                         {
                             Console.WriteLine(task);
                         }
-                        string html = View.toHtml(tasks, startDate, endDate);
+                        string html = View.toHtml(tasks, currentStartDate, currentEndDate);
                         Utils.toPdf(html, $"output{i}.pdf");
-                        startDate.AddDays(7);
-                        endDate.AddDays(7);
                     }
                 }
             }
