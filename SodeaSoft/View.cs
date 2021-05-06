@@ -15,7 +15,7 @@ namespace SodeaSoft
 			sb.Append("<tr><th>Resource</th>");
 			for (int i = 0; i < 5; i++)
 			{
-				sb.Append($"<th>{ startDate.AddDays(i).ToString("M") }</th>");
+				sb.Append($"<th>{ startDate.AddDays(i).ToString("dddd M") }</th>");
 			}
 			sb.Append("</tr>");
 			sb.Append("</thead>");
