@@ -13,7 +13,8 @@ namespace SodeaSoft
         public DateTime DatEnd { get; }
         public double Duration { get; }
         public string Name { get; }
-        public Task(string code, string caption, string information, DateTime datStart, DateTime datEnd, double duration, string name)
+        public string RS { get; }
+        public Task(string code, string caption, string information, DateTime datStart, DateTime datEnd, double duration, string name, string rs)
         {
             this.Code = code;
             this.Caption = caption;
@@ -22,6 +23,7 @@ namespace SodeaSoft
             this.DatEnd = datEnd;
             this.Duration = duration;
             this.Name = name;
+            this.RS = rs;
         }
         public override string ToString()
         {
@@ -33,6 +35,7 @@ namespace SodeaSoft
             sb.Append($"DatEnd : {DatEnd.ToLongDateString()} {DatEnd.ToLongTimeString()}\n");
             sb.Append($"Duration : {Duration}\n");
             sb.Append($"Name : {Name}\n");
+            sb.Append($"RS : {RS}\n");
             return sb.ToString();
         }
 

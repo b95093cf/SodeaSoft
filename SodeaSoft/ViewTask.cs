@@ -7,13 +7,15 @@ namespace SodeaSoft
     public class ViewTask
     {
         public string Caption { get; }
+        public string Name { get; }
         public string RS { get; }
         public string Information { get; }
         private DateTime datStart;
         private DateTime datEnd;
-        public ViewTask(string caption, string rs, string information, DateTime datStart, DateTime datEnd)
+        public ViewTask(string caption, string name, string rs, string information, DateTime datStart, DateTime datEnd)
         {
             Caption = caption;
+            Name = name;
             RS = rs;
             Information = information;
             this.datStart = datStart;

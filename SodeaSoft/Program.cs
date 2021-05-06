@@ -28,7 +28,8 @@ namespace SodeaSoft
                         reader.GetDateTime(3),
                         reader.GetDateTime(4),
                         reader.GetDouble(5),
-                        reader.GetString(7) != null ? reader.GetString(7) : reader.GetString(6)
+                        reader.GetString(8) != null ? reader.GetString(8) : reader.GetString(7),
+                        reader.GetString(6)
                     ));
                 }
             }

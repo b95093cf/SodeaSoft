@@ -29,7 +29,7 @@ namespace SodeaSoft
             List<ViewTask> ret = new List<ViewTask>();
             foreach (Task task in tasks)
                 if (task.Name == resourceName)
-                    ret.Add(new ViewTask(task.Caption, task.Name, task.Information, task.DatStart, task.DatEnd));
+                    ret.Add(new ViewTask(task.Caption, task.Name, task.RS, task.Information, task.DatStart, task.DatEnd)) ;
             return ret;
         }
         public class Week
