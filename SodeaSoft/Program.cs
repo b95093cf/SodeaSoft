@@ -104,7 +104,7 @@ FROM
                             Console.WriteLine(task);
                         }
                         string html = View.toHtml(tasks, currentStartDate, currentEndDate);
-                        Utils.toPdf(html, $"output{i}.pdf");
+                        Utils.toPdf(html, $"Semaine{Utils.GetIso8601WeekOfYear(currentStartDate)}");
                     }
                 }
             }
