@@ -72,7 +72,7 @@ FROM
             const int numberOfWeeks = 2;
             if (args.Length != 1)
             {
-                Console.WriteLine("Usage: SodeaSoft PlanningPro.db");
+                Console.WriteLine($"Usage: ./PlanningPro-Extractor PlanningPro.db");
             }
             else if (!File.Exists(args[0]))
             {
