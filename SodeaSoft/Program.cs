@@ -86,8 +86,8 @@ FROM
                 {
                     connection.Open();
                     //showTables(connection);
-                    //DateTime today = DateTime.Now.Date.AddMonths(-7);
-                    DateTime today = new DateTime(2019, 11, 27);
+                    DateTime today = DateTime.Now.Date;
+                    //DateTime today = new DateTime(2019, 11, 27);
                     DateTime startDate;
                     DateTime endDate;
                     if (today.DayOfWeek == DayOfWeek.Sunday) startDate = today.AddDays(1);
