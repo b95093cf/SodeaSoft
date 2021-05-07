@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <None Update="PlanningPro.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="www\foot.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

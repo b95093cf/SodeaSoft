@@ -2,7 +2,7 @@
   "profiles": {
     "SodeaSoft": {
       "commandName": "Project",
-      "commandLineArgs": "PlanningPro.db"
+      "commandLineArgs": "../../../PlanningPro.db"
     }
   }
 }
