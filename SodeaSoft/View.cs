@@ -15,7 +15,7 @@ namespace SodeaSoft
 			sb.Append("<tr><th>Resource</th>");
 			for (int i = 0; i < 5; i++)
 			{
-				sb.Append($"<th>{ startDate.AddDays(i).ToString("dddd M") }</th>"); //affiche numéro du mois
+				sb.Append($"<th>{ startDate.AddDays(i).ToString("dddd d") }</th>");
 			}
 			sb.Append("</tr>");
 			sb.Append("</thead>");
