@@ -24,28 +24,11 @@ namespace SodeaSoft
             prettPrint(txt, color, true);
         }
 
-        public static void showTables(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = @"SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    var name = reader.GetString(0);
-
-                    Console.WriteLine($"Table: |{name}|");
-                }
-            }
-        }
-
-        public static void toPdf(string html, string path)
+        public static void toHtml(string html, string path)
         {
             StreamWriter sr = new StreamWriter($"{path}.html");
             sr.Write(html);
             sr.Close();
-            /*PdfDocument pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-            pdf.Save(path);*/
         }
 
         // This presumes that weeks start with Monday.
