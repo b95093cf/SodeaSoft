@@ -66,17 +66,48 @@ FROM
             }
             return tasks;
         }
+
+        static void printHelp()
+        {
+            Utils.prettyWriteLine($"Usage: ./PlanningPro-Extractor PlanningPro.db DateStart NumberOfWeeksToShow", ConsoleColor.Yellow);
+            Utils.prettyWriteLine("Ex: ./PlanningPro-Extractor 'C:/My Folder/PlanningPro.db' 2021-05-31 2", ConsoleColor.Yellow);
+            Utils.prettyWriteLine("----------------------------------------------------------------------------", ConsoleColor.Yellow);
+            Utils.prettyWriteLine(" - DateStart must be in the format YYYY-MM-DD and must be a monday", ConsoleColor.Yellow);
+            Utils.prettyWriteLine(" - NumberOfWeeksToShow determines the number of output files generated (1 per week)", ConsoleColor.Yellow);
+        }
         
         static void Main(string[] args)
         {
-            const int numberOfWeeks = 2;
-            if (args.Length != 1)
+            int numberOfWeeks;
+            DateTime startDate;
+            if (args.Length != 3)
             {
-                Console.WriteLine($"Usage: ./PlanningPro-Extractor PlanningPro.db");
+                printHelp();
+                Environment.ExitCode = 10;
             }
             else if (!File.Exists(args[0]))
             {
-                Console.WriteLine($"File '{args[0]}' not found");
+                Utils.prettyWriteLine($"File '{args[0]}' not found", ConsoleColor.Red);
+                printHelp();
+                Environment.ExitCode = 11;
+            }
+            else if (!DateTime.TryParseExact(args[1], "yyyy-M-d", null, System.Globalization.DateTimeStyles.None, out startDate))
+            {
+                Utils.prettyWriteLine("DateStart is in invalid format", ConsoleColor.Red);
+                printHelp();
+                Environment.ExitCode = 12;
+            }
+            else if (startDate.DayOfWeek != DayOfWeek.Monday)
+            {
+                Utils.prettyWriteLine("DateStart is not a monday", ConsoleColor.Red);
+                printHelp();
+                Environment.ExitCode = 13;
+            }
+            else if (!Int32.TryParse(args[2], out numberOfWeeks) || numberOfWeeks <= 0)
+            {
+                Utils.prettyWriteLine("Can't parse the number of weeks (must be above 0)", ConsoleColor.Red);
+                printHelp();
+                Environment.ExitCode = 14;
             }
             else
             {
@@ -85,14 +116,7 @@ FROM
                 using (var connection = new SqliteConnection($"Data Source='{dataSourcePath}'"))
                 {
                     connection.Open();
-                    //showTables(connection);
-                    DateTime today = DateTime.Now.Date;
-                    //DateTime today = new DateTime(2019, 11, 27);
-                    DateTime startDate;
-                    DateTime endDate;
-                    if (today.DayOfWeek == DayOfWeek.Sunday) startDate = today.AddDays(1);
-                    else startDate = today.AddDays(DayOfWeek.Monday - today.DayOfWeek + 7);
-                    endDate = startDate.AddDays(5).AddSeconds(-1);
+                    DateTime endDate = startDate.AddDays(5).AddSeconds(-1);
                     for (int i = 0; i < numberOfWeeks; i++)
                     {
                         DateTime currentStartDate = startDate.AddDays(i * 7);
