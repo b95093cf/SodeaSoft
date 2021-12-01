@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using SodeaSoft.Properties;
 
 namespace SodeaSoft
 {
@@ -11,8 +12,8 @@ namespace SodeaSoft
         {
 			StringBuilder sb = new StringBuilder();
 			sb.Append("<thead>");
-			sb.Append($"<tr><th colspan=6>Semaine {Utils.GetIso8601WeekOfYear(startDate)} ({startDate.ToShortDateString()} -> {endDate.ToShortDateString()})</th></tr>");
-			sb.Append("<tr><th>Resource</th>");
+			sb.Append($"<tr><th colspan=6>{Resources.ResourceManager.GetString("Week")} {Utils.GetIso8601WeekOfYear(startDate)} ({startDate.ToShortDateString()} -> {endDate.ToShortDateString()})</th></tr>");
+			sb.Append($"<tr><th>{Resources.ResourceManager.GetString("Resource")}</th>");
 			for (int i = 0; i < 5; i++)
 			{
 				sb.Append($"<th>{ startDate.AddDays(i).ToString("dddd d") }</th>");
