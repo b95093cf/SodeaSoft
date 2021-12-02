@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using SodeaSoft.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ namespace SodeaSoft
 {
     class Program
     {
-        static List<Task> getData(SqliteConnection connection, DateTime from, DateTime to)
+        static List<Task> getData(SqliteConnection connection, DateTime from, DateTime to, int idTeam)
         {
             
             string properFrom = from.ToString("yyyy-MM-dd");
@@ -38,7 +39,7 @@ FROM
                 (datStart >= '{properFrom}' AND datStart <= '{properTo}')
             )
             AND Deleted is NULL
-            AND IDUser IN (SELECT IDResource FROM Res_Team WHERE IDTeam == 5)
+            AND IDUser IN (SELECT IDResource FROM Res_Team WHERE IDTeam == {idTeam})
         ) R1
         LEFT OUTER JOIN Customer on R1.IDCustomer == Customer.ID
     ) R2
@@ -56,7 +57,7 @@ FROM
                         reader.IsDBNull(0) ? "" : reader.GetString(0),
                         reader.IsDBNull(1) ? "" : reader.GetString(1),
                         reader.IsDBNull(2) ? "" : reader.GetString(2),
-                        reader.IsDBNull(3) ? new DateTime(1980, 1, 1): reader.GetDateTime(3),
+                        reader.IsDBNull(3) ? new DateTime(1980, 1, 1) : reader.GetDateTime(3),
                         reader.IsDBNull(4) ? new DateTime(1980, 1, 1) : reader.GetDateTime(4),
                         reader.IsDBNull(5) ? -1 : reader.GetDouble(5),
                         reader.IsDBNull(8) ? reader.IsDBNull(7) ? "" : reader.GetString(7) : reader.GetString(8),
@@ -69,18 +70,20 @@ FROM
 
         static void printHelp()
         {
-            Utils.prettyWriteLine($"Usage: ./PlanningPro-Extractor PlanningPro.db DateStart NumberOfWeeksToShow", ConsoleColor.Yellow);
-            Utils.prettyWriteLine("Ex: ./PlanningPro-Extractor 'C:/My Folder/PlanningPro.db' 2021-05-31 2", ConsoleColor.Yellow);
+            Utils.prettyWriteLine($"Usage: ./PlanningPro-Extractor PlanningPro.db DateStart NumberOfWeeksToShow IDTeam", ConsoleColor.Yellow);
+            Utils.prettyWriteLine("Ex: ./PlanningPro-Extractor 'C:/My Folder/PlanningPro.db' 2021-05-31 2 5", ConsoleColor.Yellow);
             Utils.prettyWriteLine("----------------------------------------------------------------------------", ConsoleColor.Yellow);
             Utils.prettyWriteLine(" - DateStart must be in the format YYYY-MM-DD and must be a monday", ConsoleColor.Yellow);
             Utils.prettyWriteLine(" - NumberOfWeeksToShow determines the number of output files generated (1 per week)", ConsoleColor.Yellow);
+            Utils.prettyWriteLine(" - IDTeam is the id (integer) of the team located in the table Res_Team", ConsoleColor.Yellow);
         }
         
         static void Main(string[] args)
         {
             int numberOfWeeks;
+            int idTeam;
             DateTime startDate;
-            if (args.Length != 3)
+            if (args.Length != 4)
             {
                 printHelp();
                 Environment.ExitCode = 10;
@@ -109,6 +112,12 @@ FROM
                 printHelp();
                 Environment.ExitCode = 14;
             }
+            else if (!Int32.TryParse(args[3], out idTeam))
+            {
+                Utils.prettyWriteLine("Can't parse IDTeam (must be a number)", ConsoleColor.Red);
+                printHelp();
+                Environment.ExitCode = 15;
+            }
             else
             {
                 string dataSourcePath = args[0];
@@ -122,13 +131,13 @@ FROM
                         DateTime currentStartDate = startDate.AddDays(i * 7);
                         DateTime currentEndDate = endDate.AddDays(i * 7);
                         Utils.prettyWriteLine($"{currentStartDate} -> {currentEndDate}", ConsoleColor.Green);
-                        List<Task> tasks = getData(connection, startDate, currentEndDate);
+                        List<Task> tasks = getData(connection, startDate, currentEndDate, idTeam);
                         foreach (Task task in tasks)
                         {
                             Console.WriteLine(task);
                         }
                         string html = View.toHtml(tasks, currentStartDate, currentEndDate);
-                        Utils.toHtml(html, $"Semaine{Utils.GetIso8601WeekOfYear(currentStartDate)}");
+                        Utils.toHtml(html, $"{Resources.Global_HtmlOutputFilePrefix}{Utils.GetIso8601WeekOfYear(currentStartDate)}");
                     }
                 }
             }
